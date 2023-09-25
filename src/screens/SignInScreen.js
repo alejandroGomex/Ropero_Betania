@@ -1,16 +1,27 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
 import Logo from "../../assets/images/Logo.png";
-import CustomImput from "../components/customImput/customImput";
-const SignInScreen = () => {
+import {
+  ImageBackground,
+  Pressable,
+  Modal,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  View,
+  TextInput,
+} from "react-native";
+export const SignInScreen = (modalSignIn, setModalSignIn) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.topBox} />
-      <Image source={Logo} style={styles.logo} />
-      <Text>Sign In Screen</Text>
-      <CustomImput />
-      <View style={styles.bottomBox} />
-    </View>
+    <Modal animationType="slide" visible={modalSignIn}>
+      <View style={styles.container}>
+        <View style={styles.topBox} />
+        <Image source={Logo} style={styles.logo} />
+        <Text>Sign In Screen</Text>
+        <View style={styles.bottomBox} />
+      </View>
+    </Modal>
   );
 };
 

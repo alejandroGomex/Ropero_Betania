@@ -1,7 +1,9 @@
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
+/* import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google"; */
 import React, { useState, useEffect } from "react";
-import ColorBar from "../Tools/ColorBar";
+import Logo from "../../assets/images/Logo.png";
+import { RegistroDonante } from "./RegistroDonante";
+import { SignInScreen } from "./SignInScreen";
 import {
   ImageBackground,
   Pressable,
@@ -15,13 +17,17 @@ import {
   TextInput,
 } from "react-native";
 
-export const logIn = ({ modalLogin, setModalLogin }) => {
+export const LogIn = ({ modalLogin, setModalLogin }) => {
   const [userName, setUserName] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const [modalRegistroDonante, setModalRegistroDonante] = useState(false);
+  const [modalSignIn, setModalSignIn] = useState(false);
   return (
     <Modal animationType="slide" visible={modalLogin}>
+      <View style={styles.topBox} />
+      <Image source={Logo} style={styles.logo} />
+      <View style={styles.bottomBox} />
       <View>
-        <ColorBar></ColorBar>
         <Text style={styles.title}>Bienvenido a Obras Sociales Betania</Text>
       </View>
       <View style={styles.container}>
@@ -50,13 +56,13 @@ export const logIn = ({ modalLogin, setModalLogin }) => {
           <Pressable
             style={[styles.btn]}
             onPress={() => {
-              setModalRueda(true);
+              setModalRegistroDonante(true);
             }}
           >
-            <RuedaInteligencia
-              modalRueda={modalRueda}
-              setModalRueda={setModalRueda}
-            ></RuedaInteligencia>
+            <RegistroDonante
+              modalRegistroDonante={modalRegistroDonante}
+              setModalRegistroDonante={setModalRegistroDonante}
+            ></RegistroDonante>
             <Text style={styles.subtitle}>Ingresar</Text>
           </Pressable>
           <Text>{"\n"}</Text>
@@ -70,7 +76,7 @@ export const logIn = ({ modalLogin, setModalLogin }) => {
                 marginLeft: 25,
               }}
             />
-            <Text style={{ marginHorizontal: 10, fontSize: 16 }}>or</Text>
+            <Text style={{ marginHorizontal: 10, fontSize: 16 }}>Ó</Text>
             <View
               style={{
                 flex: 1,
@@ -80,6 +86,23 @@ export const logIn = ({ modalLogin, setModalLogin }) => {
               }}
             />
           </View>
+        </View>
+        <View>
+          <Pressable
+            style={[styles.btn]}
+            onPress={() => {
+              setModalSignIn(true);
+            }}
+          >
+            <SignInScreen
+              modalSignIn={modalSignIn}
+              setModalSignIn={setModalSignIn}
+            ></SignInScreen>
+            <Text style={styles.subtitle}>Registrarse</Text>
+          </Pressable>
+          <Text>{"\n"}</Text>
+
+          <View style={{ flexDirection: "row", alignItems: "center" }}></View>
         </View>
       </View>
 
@@ -95,6 +118,24 @@ export const logIn = ({ modalLogin, setModalLogin }) => {
 };
 
 const styles = StyleSheet.create({
+  topBox: {
+    backgroundColor: "rgba(191, 241, 236, 1)",
+    height: 126,
+    width: 450,
+  },
+  logo: {
+    marginTop: -125,
+    height: 125,
+    width: 170,
+    marginLeft: 110,
+  },
+  bottomBox: {
+    backgroundColor: "rgba(191, 241, 236, 1)",
+    height: 100,
+    width: 450,
+    position: "absolute",
+    bottom: 0,
+  },
   btnExit: {
     backgroundColor: "#0069A3",
   },
@@ -107,7 +148,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: "#FFFDFD",
-    height: 600,
+    height: 510,
     width: 360,
     borderRadius: 9,
     shadowColor: "#000",
