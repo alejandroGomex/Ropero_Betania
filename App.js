@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import SignInScreen from "./src/screens/SignInScreen";
+import { SignInScreen } from "./src/screens/SignInScreen";
+import { logIn } from "./src/screens/logIn";
 export default function App() {
   return (
     <View style={styles.container}>
