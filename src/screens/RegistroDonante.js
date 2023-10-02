@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Logo from "../../assets/images/Logo.png";
 import {
   ImageBackground,
   Pressable,
@@ -11,7 +12,7 @@ import {
   View,
   TextInput,
 } from "react-native";
-
+import { RegistroRopa } from "./RegistroRopa";
 export const RegistroDonante = ({
   modalRegistroDonante,
   setModalRegistroDonante,
@@ -20,20 +21,24 @@ export const RegistroDonante = ({
   const [cedula, setCedula] = useState("");
   const [telefono, setTelefono] = useState("");
   const [correoElectronico, setCorreoElectronico] = useState("");
-
+  const [modalRegistroRopa, setModalRegistroRopa] = useState(false);
+  /* 
   const handleSubmit = () => {
     // Aquí puedes realizar acciones con los datos ingresados, como enviarlos a un servidor o almacenarlos localmente.
     console.log("Nombre Donante:", nombreDonante);
     console.log("Cédula:", cedula);
     console.log("Teléfono:", telefono);
     console.log("Correo Electrónico:", correoElectronico);
-  };
+  }; */
 
   return (
     <Modal animationType="slide" visible={modalRegistroDonante}>
       <View style={styles.container}>
+        <View style={styles.topBox} />
+        <Image source={Logo} style={styles.logo} />
+        <View style={styles.bottomBox} />
         <View>
-          <Text style={styles.title}>Información del Donante: </Text>
+          <Text style={styles.title}>Información del donante</Text>
         </View>
         <Text style={styles.label}>Nombre Donante:</Text>
         <TextInput
@@ -66,16 +71,40 @@ export const RegistroDonante = ({
           onChangeText={(text) => setCorreoElectronico(text)}
           placeholder="Ingrese el correo electrónico"
         />
-
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Enviar</Text>
-        </TouchableOpacity>
+        {/* <View>
+          <Pressable style={styles.button} onPress={setModalRegistroRopa(true)}>
+            <RegistroRopa
+              modalRegistroRopa={modalRegistroRopa}
+              setModalRegistroRopa={setModalRegistroRopa}
+            ></RegistroRopa>
+             <Text style={styles.buttonText}>Enviar</Text>
+          </Pressable>
+        </View> */}
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  topBox: {
+    marginTop: -50,
+    backgroundColor: "rgba(67, 179, 169, 0.3)", // Set your desired color
+    height: 126, // Set the height of the top box
+    width: 450,
+  },
+  logo: {
+    marginTop: -200,
+    height: 125,
+    width: 170,
+    marginLeft: -40,
+  },
+  bottomBox: {
+    backgroundColor: "rgba(67, 179, 169,0.3)", // Set your desired color
+    height: 100, // Set the height of the bottom box
+    width: 450,
+    position: "absolute",
+    bottom: 0,
+  },
   container: {
     flex: 1,
     justifyContent: "center",

@@ -1,9 +1,6 @@
-/* import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google"; */
 import React, { useState, useEffect } from "react";
 import Logo from "../../assets/images/LogoNegro.png";
-import { RegistroDonante } from "./RegistroDonante";
-import { SignIn } from "./SignIn";
+import { LogIn } from "./LogIn";
 import {
   ImageBackground,
   Pressable,
@@ -17,13 +14,17 @@ import {
   TextInput,
 } from "react-native";
 
-export const LogIn = ({ modalLogin, setModalLogin }) => {
+export const SignIn = ({ modalSignIn, setModalSignIn }) => {
   const [userName, setUserName] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [modalRegistroDonante, setModalRegistroDonante] = useState(false);
-  const [modalSignIn, setModalSignIn] = useState(false);
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [modalLogin, setModalLogin] = useState(false);
+  /*  const handleSubmit = () => {
+    //i want you to verify
+  }; */
+
   return (
-    <Modal animationType="slide" visible={modalLogin}>
+    <Modal animationType="slide" visible={modalSignIn}>
       <View style={styles.topBox} />
       <Image source={Logo} style={styles.logo} />
       <View style={styles.bottomBox} />
@@ -31,7 +32,7 @@ export const LogIn = ({ modalLogin, setModalLogin }) => {
         <Text style={styles.title}>Bienvenido a Obras Sociales Betania</Text>
       </View>
       <View style={styles.container}>
-        <Text style={styles.title}>Login</Text>
+        <Text style={styles.title}>Registro</Text>
         <View style={styles.campoUsuario}>
           <Text style={styles.text}>Nombre de usuario</Text>
           <TextInput
@@ -52,74 +53,55 @@ export const LogIn = ({ modalLogin, setModalLogin }) => {
             onChangeText={setUserPassword}
           ></TextInput>
         </View>
+        <View style={styles.campoContraseña}>
+          <Text style={styles.text}>Repetir contraseña: </Text>
+          <TextInput
+            placeholder="**********"
+            placeholderTextColor={"#000000c0"}
+            style={styles.input}
+            value={repeatPassword}
+            onChangeText={setRepeatPassword}
+          ></TextInput>
+        </View>
         <View>
           <Pressable
             style={[styles.btn]}
             onPress={() => {
-              setModalRegistroDonante(true);
+              setModalLogin(true);
             }}
           >
-            <RegistroDonante
-              modalRegistroDonante={modalRegistroDonante}
-              setModalRegistroDonante={setModalRegistroDonante}
-            ></RegistroDonante>
-            <Text style={styles.subtitle}>Ingresar</Text>
+            <LogIn
+              modalLogin={modalLogin}
+              setModalLogin={setModalLogin}
+            ></LogIn>
+            <Text style={styles.subtitle}>Iniciar Sesión</Text>
           </Pressable>
-          <Text>{"\n"}</Text>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View
-              style={{
-                flex: 1,
-                height: 2.5,
-                backgroundColor: "#ccc",
-                marginLeft: 25,
-              }}
-            />
-            <Text style={{ marginHorizontal: 10, fontSize: 16 }}>Ó</Text>
-            <View
-              style={{
-                flex: 1,
-                height: 2.5,
-                backgroundColor: "#ccc",
-                marginRight: 25,
-              }}
-            />
-          </View>
         </View>
-        <View>
+        {/*  <View>
           <Pressable
             style={[styles.btn]}
             onPress={() => {
               setModalSignIn(true);
             }}
           >
-            <SignIn
+            <SignInScreen
               modalSignIn={modalSignIn}
               setModalSignIn={setModalSignIn}
-            ></SignIn>
+            ></SignInScreen>
             <Text style={styles.subtitle}>Registrarse</Text>
           </Pressable>
           <Text>{"\n"}</Text>
 
           <View style={{ flexDirection: "row", alignItems: "center" }}></View>
-        </View>
+        </View> */}
       </View>
-
-      {/*<Pressable
-            style={styles.btnExit}
-            onPress={() => {
-              setModalLogin(!modalLogin);
-            }}>
-            <Text style={styles.btnExit}> X Cerrar</Text>
-        </Pressable>*/}
     </Modal>
   );
 };
-
 const styles = StyleSheet.create({
   topBox: {
-    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
+    marginTop: -20,
+    backgroundColor: "rgb(67, 179, 169)", // Set your desired color
     height: 126, // Set the height of the top box
     width: 450,
   },
@@ -130,7 +112,7 @@ const styles = StyleSheet.create({
     marginLeft: 110,
   },
   bottomBox: {
-    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
+    backgroundColor: "rgb(67, 179, 169)", // Set your desired color
     height: 100, // Set the height of the bottom box
     width: 450,
     position: "absolute",
