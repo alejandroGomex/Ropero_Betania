@@ -19,9 +19,9 @@ export const SignIn = ({ modalSignIn, setModalSignIn }) => {
   const [userPassword, setUserPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
-  /*  const handleSubmit = () => {
+  const handleSubmit = () => {
     //i want you to verify
-  }; */
+  };
 
   return (
     <Modal animationType="slide" visible={modalSignIn}>
@@ -77,23 +77,6 @@ export const SignIn = ({ modalSignIn, setModalSignIn }) => {
             <Text style={styles.subtitle}>Iniciar Sesión</Text>
           </Pressable>
         </View>
-        {/*  <View>
-          <Pressable
-            style={[styles.btn]}
-            onPress={() => {
-              setModalSignIn(true);
-            }}
-          >
-            <SignInScreen
-              modalSignIn={modalSignIn}
-              setModalSignIn={setModalSignIn}
-            ></SignInScreen>
-            <Text style={styles.subtitle}>Registrarse</Text>
-          </Pressable>
-          <Text>{"\n"}</Text>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}></View>
-        </View> */}
       </View>
     </Modal>
   );
@@ -101,7 +84,7 @@ export const SignIn = ({ modalSignIn, setModalSignIn }) => {
 const styles = StyleSheet.create({
   topBox: {
     marginTop: -20,
-    backgroundColor: "rgb(67, 179, 169)", // Set your desired color
+    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
     height: 126, // Set the height of the top box
     width: 450,
   },
@@ -112,7 +95,7 @@ const styles = StyleSheet.create({
     marginLeft: 110,
   },
   bottomBox: {
-    backgroundColor: "rgb(67, 179, 169)", // Set your desired color
+    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
     height: 100, // Set the height of the bottom box
     width: 450,
     position: "absolute",

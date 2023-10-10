@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Logo from "../../assets/images/Logo.png";
+import Logo from "../../assets/images/LogoNegro.png";
+import { SelectList } from "react-native-dropdown-select-list";
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import { RegistroDonante } from "./RegistroDonante";
+import { FIRESTORE_DB } from "../../firebaseConfig";
 import {
   ImageBackground,
   Pressable,
@@ -18,52 +22,165 @@ export const RegistroRopa = ({ modalRegistroRopa, setModalRegistroRopa }) => {
   const [talla, setTalla] = useState("");
   const [precio, setPrecio] = useState("");
   const [marca, setMarca] = useState("");
+  const [selected, setSelected] = React.useState("");
+  const [modalRegistroDonante, setModalRegistroDonante] = useState(false);
+  const data = [
+    { key: "1", value: "Ropero", disabled: true },
+    { key: "2", value: "Bazar" },
+    { key: "3", value: "Donar" },
+  ];
 
-  /* const handleSubmit = () => {
-    // Aquí puedes realizar acciones con los datos ingresados.
-    console.log("Categoría:", categoria);
-    console.log("Talla:", talla);
-    console.log("Precio:", precio);
-    console.log("Marca:", marca);
+  const handleSubmit = async () => {
+    const doc = await addDoc(collection(FIRESTORE_DB, "Ropa"), {
+      value: selected,
+      talla,
+      precio,
+      marca,
+    });
+    console.log("Prenda registrada con ID: ", doc.id);
   };
- */
+
   return (
     <Modal animationType="slide" visible={modalRegistroRopa}>
-      <View>
-        <Text>Marca:</Text>
+      <View style={styles.container}>
+        <View style={styles.topBox} />
+        <Image source={Logo} style={styles.logo} />
+        <View>
+          <Text style={styles.title}>Información Ropa</Text>
+        </View>
+        <Text style={styles.label}>Marca</Text>
         <TextInput
+          style={styles.input}
           value={marca}
           onChangeText={(text) => setMarca(text)}
-          placeholder="Ingrese la marca"
+          placeholder="Ingrese la marca del articulo "
         />
-        <Text>Categoría:</Text>
-        <Picker
-          selectedValue={categoria}
-          onValueChange={(itemValue, itemIndex) => setCategoria(itemValue)}
-        >
-          <Picker.Item label="Seleccione una categoría" value="" />
-          <Picker.Item label="Categoría 1" value="Categoria1" />
-          <Picker.Item label="Categoría 2" value="Categoria2" />
-          <Picker.Item label="Categoría 3" value="Categoria3" />
-        </Picker>
-
-        <Text>Talla:</Text>
+        <View style={styles.label}>
+          <SelectList
+            setSelected={(val) => setSelected(val)}
+            data={data}
+            save="value"
+          />
+        </View>
+        <Text style={styles.label}>Talla</Text>
         <TextInput
+          style={styles.input}
           value={talla}
           onChangeText={(text) => setTalla(text)}
-          placeholder="Ingrese la talla"
+          placeholder="Ingrese la talla "
         />
 
-        <Text>Precio:</Text>
+        <Text style={styles.label}>Precio</Text>
         <TextInput
+          style={styles.input}
           value={precio}
           onChangeText={(text) => setPrecio(text)}
-          placeholder="Ingrese el precio"
+          placeholder="Ingrese el precio del articulo donado"
         />
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Enviar</Text>
-        </Pressable>
       </View>
+      <View>
+        <Pressable
+          style={[styles.button1]}
+          onPress={() => {
+            handleSubmit();
+          }}
+        >
+          <Text style={styles.buttonText}>Nuevo Registro</Text>
+        </Pressable>
+        <Text>{"\n"}</Text>
+      </View>
+      <View>
+        <Pressable
+          style={[styles.button2]}
+          onPress={() => {
+            setModalRegistroRopa(false);
+          }}
+        >
+          <RegistroDonante
+            modalRegistroDonante={modalRegistroDonante}
+            setModalRegistroDonante={setModalRegistroDonante}
+          ></RegistroDonante>
+          <Text style={styles.buttonText}>Atras</Text>
+        </Pressable>
+        <Text>{"\n"}</Text>
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}></View>
+      </View>
+      <View style={styles.bottomBox} />
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  topBox: {
+    marginTop: -20,
+    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
+    height: 126, // Set the height of the top box
+    width: 450,
+  },
+  logo: {
+    marginTop: -125,
+    height: 125,
+    width: 170,
+    marginLeft: -30,
+  },
+  bottomBox: {
+    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
+    height: 100, // Set the height of the bottom box
+    width: 450,
+    position: "absolute",
+    bottom: 0,
+    marginBottom: 0,
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  label: {
+    fontSize: 24,
+    marginBottom: 10,
+    textAlign: "left",
+  },
+  title: {
+    textAlign: "center",
+    fontSize: 32,
+    color: "#000000",
+    fontWeight: "800",
+    marginTop: 10,
+    marginBottom: 40,
+  },
+  input: {
+    width: "100%",
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  button1: {
+    height: 45,
+    width: 200,
+    padding: 10,
+    marginTop: 30,
+    marginLeft: 100,
+    borderRadius: 10,
+    backgroundColor: "#0069a3",
+  },
+  button2: {
+    height: 45,
+    width: 200,
+    padding: 10,
+    marginTop: 30,
+    marginLeft: 100,
+    borderRadius: 10,
+    backgroundColor: "#0069a3",
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 16,
+  },
+});

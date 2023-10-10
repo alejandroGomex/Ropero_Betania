@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Logo from "../../assets/images/Logo.png";
+import Logo from "../../assets/images/LogoNegro.png";
+import { RegistroRopa } from "./RegistroRopa";
+import { addDoc, collection, deleteDoc, getDocs } from "firebase/firestore";
+import { FIRESTORE_DB } from "../../firebaseConfig";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   ImageBackground,
   Pressable,
@@ -11,8 +16,41 @@ import {
   TouchableOpacity,
   View,
   TextInput,
+  FlatList, // import FlatList
 } from "react-native";
-import { RegistroRopa } from "./RegistroRopa";
+const deleteDonante = async (id) => {
+  try {
+    await deleteDoc(doc(FIRESTORE_DB, "donantes", id));
+    console.log("Donante eliminado con ID: ", id);
+  } catch (error) {
+    console.error("Error eliminando el donante: ", error);
+  }
+};
+// create DonanteItem component
+const DonanteItem = ({ item }) => {
+  return (
+    <View style={styles.item}>
+      <Text style={styles.itemText}>Nombre: {item.nombreDonante}</Text>
+      <Text style={styles.itemText}>Cedula: {item.cedula}</Text>
+      <Text style={styles.itemText}>Telefono:{item.telefono}</Text>
+      <Text style={styles.itemText}>
+        Correo Electronico: {item.correoElectronico}
+      </Text>
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity>
+          <MaterialCommunityIcons
+            name="delete"
+            size={24}
+            color="black"
+            onPress={deleteDonante}
+          />
+        </TouchableOpacity>
+        <MaterialCommunityIcons name="archive-edit" size={24} color="black" />
+      </View>
+    </View>
+  );
+};
+
 export const RegistroDonante = ({
   modalRegistroDonante,
   setModalRegistroDonante,
@@ -22,14 +60,30 @@ export const RegistroDonante = ({
   const [telefono, setTelefono] = useState("");
   const [correoElectronico, setCorreoElectronico] = useState("");
   const [modalRegistroRopa, setModalRegistroRopa] = useState(false);
-  /* 
-  const handleSubmit = () => {
-    // Aquí puedes realizar acciones con los datos ingresados, como enviarlos a un servidor o almacenarlos localmente.
-    console.log("Nombre Donante:", nombreDonante);
-    console.log("Cédula:", cedula);
-    console.log("Teléfono:", telefono);
-    console.log("Correo Electrónico:", correoElectronico);
-  }; */
+  const [modalListaDonantes, setModalListaDonantes] = useState(false);
+  const [donantes, setDonantes] = useState([]);
+
+  const handleSubmit = async () => {
+    const doc = await addDoc(collection(FIRESTORE_DB, "donantes"), {
+      nombreDonante,
+      cedula,
+      telefono,
+      correoElectronico,
+    });
+    console.log("Donante registrado con ID: ", doc.id);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const querySnapshot = await getDocs(collection(FIRESTORE_DB, "donantes"));
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setDonantes(data);
+    };
+    fetchData();
+  }, []);
 
   return (
     <Modal animationType="slide" visible={modalRegistroDonante}>
@@ -71,80 +125,136 @@ export const RegistroDonante = ({
           onChangeText={(text) => setCorreoElectronico(text)}
           placeholder="Ingrese el correo electrónico"
         />
-        {/* <View>
-          <Pressable style={styles.button} onPress={setModalRegistroRopa(true)}>
-            <RegistroRopa
-              modalRegistroRopa={modalRegistroRopa}
-              setModalRegistroRopa={setModalRegistroRopa}
-            ></RegistroRopa>
-             <Text style={styles.buttonText}>Enviar</Text>
+
+        <View>
+          <Pressable
+            style={[styles.button]}
+            onPress={() => {
+              setModalRegistroRopa(true);
+              handleSubmit();
+            }}
+          >
+            <Text style={styles.buttonText}>Registrar Ropa</Text>
           </Pressable>
-        </View> */}
+          <Pressable
+            style={[styles.button]}
+            onPress={() => {
+              setModalListaDonantes(true);
+            }}
+          >
+            <Text style={styles.buttonText}>Ver Donantes</Text>
+          </Pressable>
+        </View>
       </View>
+
+      {/* render modal with list of donantes */}
+      <Modal animationType="slide" visible={modalListaDonantes}>
+        <View style={styles.container}>
+          <View style={styles.topBox} />
+          <Image source={Logo} style={styles.logo} />
+          <View style={styles.bottomBox} />
+          <View>
+            <Text style={styles.title}>Lista de Donantes</Text>
+          </View>
+
+          <FlatList
+            style={{ width: "100%", height: "70%", marginBottom: 50 }}
+            data={donantes}
+            renderItem={({ item }) => <DonanteItem item={item} />}
+            keyExtractor={(item) => item.id}
+          />
+
+          <Pressable
+            style={[styles.button]}
+            onPress={() => {
+              setModalListaDonantes(false);
+            }}
+          >
+            <Text style={styles.buttonText}>Cerrar</Text>
+          </Pressable>
+        </View>
+      </Modal>
+
+      {/* render modal with form to register ropa */}
+      <RegistroRopa
+        modalRegistroRopa={modalRegistroRopa}
+        setModalRegistroRopa={setModalRegistroRopa}
+      />
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F5F5F5",
+  },
   topBox: {
-    marginTop: -50,
-    backgroundColor: "rgba(67, 179, 169, 0.3)", // Set your desired color
+    marginTop: -10,
+    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
     height: 126, // Set the height of the top box
     width: 450,
   },
-  logo: {
-    marginTop: -200,
-    height: 125,
-    width: 170,
-    marginLeft: -40,
-  },
   bottomBox: {
-    backgroundColor: "rgba(67, 179, 169,0.3)", // Set your desired color
+    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
     height: 100, // Set the height of the bottom box
     width: 450,
     position: "absolute",
     bottom: 0,
   },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  label: {
-    fontSize: 24,
-    marginBottom: 10,
-    textAlign: "left",
+  logo: {
+    marginTop: -125,
+    height: 125,
+    width: 170,
+    marginLeft: -40,
   },
   title: {
-    textAlign: "center",
-    fontSize: 32,
-    color: "#000000",
-    fontWeight: "800",
-    marginTop: 10,
-    marginBottom: 40,
+    fontSize: 24,
+    fontWeight: "bold",
+    marginVertical: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginVertical: 10,
+    alignSelf: "flex-start",
+    marginLeft: 20,
   },
   input: {
-    width: "100%",
+    width: "80%",
     height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    marginVertical: 10,
   },
   button: {
-    backgroundColor: "blue",
     height: 45,
-    /*  width: 100,*/
+    width: 200,
     padding: 10,
     marginTop: 20,
-    borderRadius: 5,
-    width: "70%",
+    marginBottom: 20,
+    marginLeft: 5,
+    borderRadius: 10,
+    backgroundColor: "#0069a3",
   },
   buttonText: {
     color: "white",
     textAlign: "center",
     fontSize: 16,
+  },
+  item: {
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 10,
+  },
+  itemText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
   },
 });
