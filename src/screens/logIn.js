@@ -5,6 +5,13 @@ import Logo from "../../assets/images/LogoNegro.png";
 import { RegistroDonante } from "./RegistroDonante";
 import { SignIn } from "./SignIn";
 import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
+import {
   ImageBackground,
   Pressable,
   Modal,
@@ -18,8 +25,8 @@ import {
 } from "react-native";
 
 export const LogIn = ({ modalLogin, setModalLogin }) => {
-  const [userName, setUserName] = useState("");
-  const [userPassword, setUserPassword] = useState("");
+  const [email, setEmail] = React.useState("");
+  const [userPassword, setUserPassword] = React.useState("");
   const [modalRegistroDonante, setModalRegistroDonante] = useState(false);
   const [modalSignIn, setModalSignIn] = useState(false);
   return (
@@ -38,8 +45,8 @@ export const LogIn = ({ modalLogin, setModalLogin }) => {
             placeholder="@fosbetania.org"
             placeholderTextColor={"#000000c0"}
             style={styles.input}
-            value={userName}
-            onChangeText={setUserName}
+            value={email}
+            onChangeText={setEmail}
           ></TextInput>
         </View>
         <View style={styles.campoContraseña}>

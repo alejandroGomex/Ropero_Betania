@@ -67,13 +67,9 @@ export const SignIn = ({ modalSignIn, setModalSignIn }) => {
           <Pressable
             style={[styles.btn]}
             onPress={() => {
-              setModalLogin(true);
+              setModalSignIn(false);
             }}
           >
-            <LogIn
-              modalLogin={modalLogin}
-              setModalLogin={setModalLogin}
-            ></LogIn>
             <Text style={styles.subtitle}>Iniciar Sesión</Text>
           </Pressable>
         </View>

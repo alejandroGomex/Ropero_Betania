@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Logo from "../../assets/images/LogoNegro.png";
 import { RegistroRopa } from "./RegistroRopa";
-import { addDoc, collection, deleteDoc, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { FIRESTORE_DB } from "../../firebaseConfig";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -18,38 +25,6 @@ import {
   TextInput,
   FlatList, // import FlatList
 } from "react-native";
-const deleteDonante = async (id) => {
-  try {
-    await deleteDoc(doc(FIRESTORE_DB, "donantes", id));
-    console.log("Donante eliminado con ID: ", id);
-  } catch (error) {
-    console.error("Error eliminando el donante: ", error);
-  }
-};
-// create DonanteItem component
-const DonanteItem = ({ item }) => {
-  return (
-    <View style={styles.item}>
-      <Text style={styles.itemText}>Nombre: {item.nombreDonante}</Text>
-      <Text style={styles.itemText}>Cedula: {item.cedula}</Text>
-      <Text style={styles.itemText}>Telefono:{item.telefono}</Text>
-      <Text style={styles.itemText}>
-        Correo Electronico: {item.correoElectronico}
-      </Text>
-      <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity>
-          <MaterialCommunityIcons
-            name="delete"
-            size={24}
-            color="black"
-            onPress={deleteDonante}
-          />
-        </TouchableOpacity>
-        <MaterialCommunityIcons name="archive-edit" size={24} color="black" />
-      </View>
-    </View>
-  );
-};
 
 export const RegistroDonante = ({
   modalRegistroDonante,
@@ -84,6 +59,47 @@ export const RegistroDonante = ({
     };
     fetchData();
   }, []);
+  const DonanteItem = ({ item }) => {
+    const ref = doc(FIRESTORE_DB, `donantes/${item.id}`);
+    const deleteDonante = async () => {
+      deleteDoc(ref);
+      console.log("Donante eliminado con ID: ", item.id);
+    };
+    const updateDonante = async () => {
+      updateDoc(ref, { done: !item.done });
+      console.log("Donante actualizado con ID: ", item.id);
+    };
+    return (
+      <View style={styles.item}>
+        <Text style={styles.itemText}>Nombre: {item.nombreDonante}</Text>
+        <Text style={styles.itemText}>Cedula: {item.cedula}</Text>
+        <Text style={styles.itemText}>Telefono:{item.telefono}</Text>
+        <Text style={styles.itemText}>
+          Correo Electronico: {item.correoElectronico}
+        </Text>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity>
+            <MaterialCommunityIcons
+              name="delete"
+              size={24}
+              color="black"
+              onPress={() => {
+                deleteDonante();
+              }}
+            />
+          </TouchableOpacity>
+          <MaterialCommunityIcons
+            name="archive-edit"
+            size={24}
+            color="black"
+            onPress={() => {
+              updateDonante();
+            }}
+          />
+        </View>
+      </View>
+    );
+  };
 
   return (
     <Modal animationType="slide" visible={modalRegistroDonante}>
@@ -126,12 +142,16 @@ export const RegistroDonante = ({
           placeholder="Ingrese el correo electrónico"
         />
 
-        <View>
+        <View flexDirection={"row"}>
           <Pressable
             style={[styles.button]}
             onPress={() => {
               setModalRegistroRopa(true);
               handleSubmit();
+              setCedula("");
+              setCorreoElectronico("");
+              setTelefono("");
+              setNombreDonante("");
             }}
           >
             <Text style={styles.buttonText}>Registrar Ropa</Text>
@@ -192,7 +212,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
   },
   topBox: {
-    marginTop: -10,
+    marginTop: -110,
     backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
     height: 126, // Set the height of the top box
     width: 450,
