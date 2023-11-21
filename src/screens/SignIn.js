@@ -2,6 +2,14 @@ import React, { useState, useEffect } from "react";
 import Logo from "../../assets/images/LogoNegro.png";
 import { LogIn } from "./LogIn";
 import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
+
+import {
   ImageBackground,
   Pressable,
   Modal,
@@ -19,10 +27,27 @@ export const SignIn = ({ modalSignIn, setModalSignIn }) => {
   const [userPassword, setUserPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
-  const handleSubmit = () => {
-    //i want you to verify
-  };
 
+  const handleCreateAccount = () => {
+    /*  createUserWithEmailAndPassword(auth, userName, userPassword)
+      .then(() => {
+        console.log("Usuario creado");
+        const user = userCredential.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        console.log(error);
+      }); */
+  };
+  const checkPasswordsMatch = (userPassword, repeatPassword) => {
+    if (userPassword !== repeatPassword) {
+      alert("Las contraseñas no coinciden");
+      setModalSignIn(true);
+    } else {
+      handleCreateAccount();
+      setModalSignIn(false);
+    }
+  };
   return (
     <Modal animationType="slide" visible={modalSignIn}>
       <View style={styles.topBox} />
@@ -67,7 +92,7 @@ export const SignIn = ({ modalSignIn, setModalSignIn }) => {
           <Pressable
             style={[styles.btn]}
             onPress={() => {
-              setModalSignIn(false);
+              checkPasswordsMatch(userPassword, repeatPassword);
             }}
           >
             <Text style={styles.subtitle}>Iniciar Sesión</Text>

@@ -11,6 +11,8 @@ import {
 import { RegistroDonante } from "./RegistroDonante";
 import { FIRESTORE_DB } from "../../firebaseConfig";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ImagePicker } from "react-native-image-picker";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import {
   ImageBackground,
   Pressable,
@@ -33,12 +35,18 @@ export const RegistroRopa = ({ modalRegistroRopa, setModalRegistroRopa }) => {
   const [selected, setSelected] = React.useState("");
   const [modalListaRopa, setModalListaRopa] = useState(false);
   const [modalRegistroDonante, setModalRegistroDonante] = useState(false);
+  const [image, setImage] = useState(null);
   const [Ropa, setRopa] = useState([]);
+  const [state, setState] = useState({
+    photo: " ",
+  });
 
   const data = [
-    { key: "1", value: "Ropero", disabled: true },
-    { key: "2", value: "Bazar" },
-    { key: "3", value: "Donar" },
+    { key: "1", value: "Ropero Calle", disabled: true },
+    { key: "2", value: "Ropero medio" },
+    { key: "3", value: "Ropero Ezquina" },
+    { key: "4", value: "Bazar" },
+    { key: "5", value: "Donar" },
   ];
 
   const handleSubmit = async () => {
@@ -87,7 +95,6 @@ export const RegistroRopa = ({ modalRegistroRopa, setModalRegistroRopa }) => {
               }}
             />
           </TouchableOpacity>
-          <MaterialCommunityIcons name="archive-edit" size={24} color="black" />
         </View>
       </View>
     );
@@ -131,6 +138,14 @@ export const RegistroRopa = ({ modalRegistroRopa, setModalRegistroRopa }) => {
           placeholder="Ingrese el precio del articulo donado"
         />
 
+        <View style={styles.imagePickerContainer}>
+          {state.photo == "" ? (
+            <Text></Text>
+          ) : (
+            <Image source={{ uri: state.photo }} />
+          )}
+        </View>
+
         <View flexDirection={"row"}>
           <Pressable
             style={[styles.button]}
@@ -140,6 +155,7 @@ export const RegistroRopa = ({ modalRegistroRopa, setModalRegistroRopa }) => {
               setSelected("");
               setTalla("");
               setPrecio("");
+              setImagen(null);
             }}
           >
             <Text style={styles.buttonText}>Nuevo Registro</Text>
@@ -291,177 +307,3 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-
-/*    <Modal animationType="slide" visible={modalRegistroRopa}>
-      <View style={styles.container}>
-        <View style={styles.topBox} />
-        <Image source={Logo} style={styles.logo} />
-        <View style={styles.bottomBox} />
-        <View>
-          <Text style={styles.title}>Información de la ropa </Text>
-        </View>
-        <Text style={styles.label}>Marca de Ropa:</Text>
-        <TextInput
-          style={styles.input}
-          value={marca}
-          onChangeText={(text) => setMarca(text)}
-          placeholder="Ingrese la marca"
-        />
-
-        <Text style={styles.label}>Talla De ropa</Text>
-        <TextInput
-          style={styles.input}
-          value={talla}
-          onChangeText={(text) => setTalla(text)}
-          placeholder="Ingrese la talla "
-        />
-
-        <View style={styles.label}>
-          <SelectList
-            setSelected={(val) => setSelected(val)}
-            data={data}
-            save="value"
-          />
-
-          <Text style={styles.label}>Precio:</Text>
-          <TextInput
-            style={styles.input}
-            value={precio}
-            onChangeText={(text) => setPrecio(text)}
-            placeholder="Ingrese el Precio"
-          />
-
-          <View>
-            <Pressable
-              style={[styles.button]}
-              onPress={() => {
-                setModalRegistroRopa(true);
-                handleSubmit();
-              }}
-            >
-              <Text style={styles.buttonText}>Registrar Ropa</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button]}
-              onPress={() => {
-                setModalListaRopa(true);
-              }}
-            >
-              <Text style={styles.buttonText}>Ver Prendas</Text>
-            </Pressable>
-          </View>
-        </View>
-      </View>
-
-      {/* render modal with list of donantes 
-      <Modal animationType="slide" visible={modalListaRopa}>
-        <View style={styles.container}>
-          <View style={styles.topBox} />
-          <Image source={Logo} style={styles.logo} />
-          <View style={styles.bottomBox} />
-          <View>
-            <Text style={styles.title}>Catalogo de prendas</Text>
-          </View>
-
-          <FlatList
-            style={{ width: "100%", height: "70%", marginBottom: 50 }}
-            data={Ropa}
-            renderItem={({ item }) => <RopaItem item={item} />}
-            keyExtractor={(item) => item.id}
-          />
-
-          <Pressable
-            style={[styles.button]}
-            onPress={() => {
-              setModalListaDonantes(false);
-            }}
-          >
-            <Text style={styles.buttonText}>Cerrar</Text>
-          </Pressable>
-        </View>
-      </Modal>
-
-      {/* render modal with form to register ropa 
-      <RegistroRopa
-        modalRegistroRopa={modalRegistroRopa}
-        setModalRegistroRopa={setModalRegistroRopa}
-      />
-    </Modal>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#F5F5F5",
-  },
-  topBox: {
-    marginTop: -10,
-    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
-    height: 126, // Set the height of the top box
-    width: 450,
-  },
-  bottomBox: {
-    backgroundColor: "rgba(67, 179, 169,0.8)", // Set your desired color
-    height: 100, // Set the height of the bottom box
-    width: 450,
-    position: "absolute",
-    bottom: 0,
-  },
-  logo: {
-    marginTop: -125,
-    height: 125,
-    width: 170,
-    marginLeft: -40,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginVertical: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginVertical: 10,
-    alignSelf: "flex-start",
-    marginLeft: 20,
-  },
-  input: {
-    width: "80%",
-    height: 40,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    marginVertical: 10,
-  },
-  button: {
-    height: 45,
-    width: 200,
-    padding: 10,
-    marginTop: 20,
-    marginBottom: 20,
-    marginLeft: 5,
-    borderRadius: 10,
-    backgroundColor: "#0069a3",
-  },
-  buttonText: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 16,
-  },
-  item: {
-    backgroundColor: "#FFFFFF",
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius: 10,
-  },
-  itemText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-});
- */

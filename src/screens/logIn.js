@@ -9,8 +9,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
 import {
   ImageBackground,
   Pressable,
@@ -29,6 +27,7 @@ export const LogIn = ({ modalLogin, setModalLogin }) => {
   const [userPassword, setUserPassword] = React.useState("");
   const [modalRegistroDonante, setModalRegistroDonante] = useState(false);
   const [modalSignIn, setModalSignIn] = useState(false);
+
   return (
     <Modal animationType="slide" visible={modalLogin}>
       <View style={styles.topBox} />

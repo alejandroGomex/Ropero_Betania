@@ -88,14 +88,6 @@ export const RegistroDonante = ({
               }}
             />
           </TouchableOpacity>
-          <MaterialCommunityIcons
-            name="archive-edit"
-            size={24}
-            color="black"
-            onPress={() => {
-              updateDonante();
-            }}
-          />
         </View>
       </View>
     );
